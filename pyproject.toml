@@ -1,0 +1,64 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pdf-ocrer"
+dynamic = ["version"]
+description = "Batch OCR scanned PDFs into searchable PDFs named with an _OCR suffix."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [
+  { name = "nizhiyi" },
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Environment :: Win32 (MS Windows)",
+  "Intended Audience :: End Users/Desktop",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Office/Business",
+]
+dependencies = [
+  "customtkinter>=6.0",
+  "onnxruntime>=1.19",
+  "pymupdf>=1.26",
+  "rapidocr>=3.9",
+  "tkinterdnd2>=0.5",
+  "tomlkit>=0.12",
+]
+
+[project.optional-dependencies]
+rapidocr-gpu-cuda = ["onnxruntime-gpu>=1.19"]
+rapidocr-gpu-dml = ["onnxruntime-directml>=1.19"]
+dev = ["pytest>=8", "ruff", "psutil", "pillow"]
+
+[project.scripts]
+pdf-ocrer = "pdf_ocrer.cli:main"
+
+[project.gui-scripts]
+pdf-ocrer-gui = "pdf_ocrer.gui:run_gui"
+
+[project.urls]
+Homepage = "https://github.com/nizhiyi/pdf-ocrer"
+Issues = "https://github.com/nizhiyi/pdf-ocrer/issues"
+
+[tool.hatch.version]
+path = "src/pdf_ocrer/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pdf_ocrer"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = '-m "not integration"'
+markers = ["integration: needs real OCR models"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

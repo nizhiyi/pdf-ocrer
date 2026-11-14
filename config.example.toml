@@ -1,0 +1,65 @@
+# pdf_ocrer 设置模板
+# 请复制为 config.toml 后调整；未设置字段会使用默认值。
+
+[ocr]
+# OCR 渲染分辨率。默认：200，范围：72–600。
+dpi = 200
+# OCR 最低信心分数。默认：0.5，范围：0–1。
+min_confidence = 0.5
+# 已有文字层的页面是否跳过 OCR。默认：true。
+skip_pages_with_text = true
+# 判定已有文字层所需的最少字符数。默认：30。
+min_existing_chars = 30
+# OCR 执行设备："cpu"（默认）、"cuda"（NVIDIA GPU）或 "dml"（DirectML，Windows 通用 GPU）。
+# 注：cuda/dml 需另外安装对应 GPU 版 onnxruntime 套件（见下方 GPU 说明）。
+device = "cpu"
+# 文字检测长边限制。默认：未设置，使用 RapidOCR 库默认值。
+# det_limit_side_len = 1536
+# OCR 模型版本：PP-OCRv6（默认）、PP-OCRv5 或 PP-OCRv4。
+# 安装包仅内置 PP-OCRv6 small；其它版本首次使用需联网自动下载。
+ocr_version = "PP-OCRv6"
+# 模型大小，须与版本匹配：PP-OCRv6 → tiny/small/medium；PP-OCRv4/v5 → mobile/server。
+# 默认 small（内置、免下载、CPU 快）。
+model_type = "small"
+# 推理线程数。0 = 库默认（映射到 RapidOCR intra_op_num_threads）。
+cpu_threads = 0
+# 文字行方向检测（处理上下颠倒的行）。默认 true
+textline_orientation = true
+# GPU 加速（进阶，仅源码/pip 安装，打包安装档为纯 CPU）：
+#   NVIDIA 显卡：pip install "pdf-ocrer[rapidocr-gpu-cuda]"，并设 device = "cuda"
+#   其他 GPU（AMD/Intel 核显等）：pip install "pdf-ocrer[rapidocr-gpu-dml]"，并设 device = "dml"
+#   安装 GPU 版前请先移除已安装的 CPU 版 onnxruntime，避免套件冲突。
+#   启动时若日志出现「将改以 CPU 执行」的警告，代表 GPU 套件未正确安装。
+
+[output]
+# 覆盖原文件模式：勾选后 OCR 结果直接替换原文件，
+# 原文件会先备份到 <下载文件夹>\pdf-ocrer备份\（重名自动加时间戳）。
+# 备份/替换失败时自动保留 _OCR 文件，不丢数据。默认：false。
+# 不勾选时输出固定为 原文件名_OCR.pdf，保存在原文件所在目录。
+overwrite_original = false
+
+[input]
+# 是否扫描子文件夹。默认 false
+recursive = false
+# 图片输入扩展名列表；支持 jpg/jpeg/png/tif/tiff。设为 [] 可停用图片输入。
+image_extensions = ["jpg", "jpeg", "png", "tif", "tiff"]
+
+[performance]
+# 0.9 起已废弃：程序固定一次处理 1 个文件，OCR 引擎在独立子进程中常驻，
+# 模型只在首个批次加载一次。此段保留会被自动忽略，保存设置时自动移除。
+
+[logging]
+# 是否写入文件日志。默认：true。
+enabled = true
+# 文件日志等级。默认：INFO；可选 DEBUG/INFO/WARNING/ERROR。
+level = "INFO"
+# 日志文件夹。空字符串会使用 %LOCALAPPDATA%\pdf_ocrer\logs；无 LOCALAPPDATA 时使用 ~/.pdf_ocrer/logs。
+dir = ""
+
+[debug]
+# 是否显示红色文字层，供对位除错。默认：false。
+visible_text = false
+
+[gui]
+# GUI 外观模式（界面不再提供切换按钮）。默认：system；可选 system/light/dark。
+appearance = "system"
